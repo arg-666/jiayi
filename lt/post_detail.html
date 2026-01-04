@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我很久没有联系上她了 - 网络记忆论坛</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            padding: 20px 30px;
+        }
+        
+        .back-button {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .main-post {
+            padding: 30px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .post-title {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        
+        .post-content {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #34495e;
+            margin-bottom: 25px;
+        }
+        
+        .post-content p {
+            margin-bottom: 15px;
+        }
+        
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .replies-section {
+            padding: 0 30px 30px;
+        }
+        
+        .replies-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .reply-count {
+            color: #2c3e50;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        
+        .sort-options {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .reply {
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.3s;
+        }
+        
+        .reply:hover {
+            background: #f9f9f9;
+        }
+        
+        .reply-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .reply-author {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .reply-time {
+            color: #95a5a6;
+            font-size: 0.9em;
+        }
+        
+        .reply-content {
+            line-height: 1.6;
+            color: #34495e;
+        }
+        
+        .highlight-reply {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            margin: 20px 0;
+        }
+        
+        .important-clue {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #ffeaa7;
+            position: relative;
+        }
+        
+        .clue-tag {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            position: absolute;
+            top: -10px;
+            left: 15px;
+        }
+        
+        .hidden-link {
+            color: white;
+            text-decoration: none;
+            background: white;
+            padding: 0 5px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .hidden-link:hover {
+            background: #f0f0f0;
+        }
+        
+        .wayback-machine {
+            background: #e8f4fc;
+            border: 2px dashed #3498db;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .wayback-link {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        .wayback-link:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+        
+        .blink {
+            animation: blink 1.5s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .secret-code {
+            font-family: 'Courier New', monospace;
+            background: #2c3e50;
+            color: #2ecc71;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+            font-size: 0.9em;
+            display: inline-block;
+        }
+        
+        .invisible {
+            color: transparent;
+            background: transparent;
+            position: absolute;
+        }
+        
+        .cursor {
+            animation: cursor-blink 1s infinite;
+            color: #2c3e50;
+        }
+        
+        @keyframes cursor-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+        }
+        
+        .page-btn {
+            padding: 8px 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .page-btn:hover, .page-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .reply-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        
+        .form-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 1em;
+            margin-bottom: 15px;
+            resize: vertical;
+        }
+        
+        .form-submit {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+        
+        .form-submit:hover {
+            background: #2980b9;
+        }
+        
+        .warning-box {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .user-badge {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+        
+        .moderator {
+            background: #e74c3c;
+        }
+        
+        .vip {
+            background: #f39c12;
+        }
+        
+        .quote {
+            background: #f8f9fa;
+            border-left: 3px solid #95a5a6;
+            padding: 10px 15px;
+            margin: 10px 0;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .like-btn {
+            background: transparent;
+            border: 1px solid #dee2e6;
+            color: #95a5a6;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+        
+        .like-btn:hover {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+        
+        .liked {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="forum_index.html" class="back-button">← 返回论坛首页</a>
+            <h1>网络记忆论坛 › 求助专区</h1>
+        </header>
+        
+        <div class="main-post">
+            <h1 class="post-title">我很久没有联系上她了，她是我小时候认识的第一个网友</h1>
+            
+            <div class="post-content">
+                <p>大家好，我是楼主"记忆追寻者"。</p>
+                
+                <p>事情是这样的：大约在2008年，我通过一个现在已经关闭的儿童论坛"梦幻乐园"认识了一个女孩，她的网名是"佳怡"。</p>
+                
+                <p>那时候我们都还小，我在北京，她在南方某个城市。我们经常在QQ上聊天，互相分享生活中的趣事。她告诉我她喜欢画画，梦想是成为一名插画师。</p>
+                
+                <p>我们最常用的联系方式是她的博客，地址是：<strong>http://www.myjiayibh.net</strong></p>
+                
+                <p>她在博客上记录自己的日常生活、绘画作品和学习心得。我也会经常去留言，她总是很快回复。</p>
+                
+                <p>2010年之后，由于学业压力，我们联系逐渐变少。2012年，她的博客停止更新，最后的博文说她要准备一个重要的考试。</p>
+                
+                <p>之后我们就完全失去了联系。QQ头像再也没有亮起，邮件也没有回复。</p>
+                
+                <p>最近我突然很想找到她，想知道她是否实现了成为插画师的梦想。但是我发现她的博客网站已经打不开了，所有联系方式都失效了。</p>
+                
+                <p>我只有这些零碎的信息：</p>
+                <ul>
+                    <li>网名：佳怡</li>
+                    <li>真名：可能叫"林佳怡"（她曾提过一次）</li>
+                    <li>博客：http://www.myjiayibh.net（已无法访问）</li>
+                    <li>QQ：已失效（号码我记不清了）</li>
+                    <li>最后更新：2012年6月30日</li>
+                    <li>可能居住地：南方某城市，可能在江苏或浙江</li>
+                    <li>出生年份：大概1995年左右</li>
+                    <li>爱好：绘画、动漫、写作</li>
+                </ul>
+                
+                <p>请问大家有什么建议吗？我还有可能找到她吗？</p>
+                
+                <div class="warning-box">
+                    <strong>注意：</strong> 我已经尝试过以下方法：
+                    <ul style="margin-top: 10px;">
+                        <li>在各大社交平台搜索她的网名和可能的名字</li>
+                        <li>尝试联系"梦幻乐园"论坛的管理员（论坛已关闭）</li>
+                        <li>通过域名注册信息查找（无有效信息）</li>
+                        <li>询问当年的共同网友（都已失去联系）</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="post-meta">
+                <div>发帖人: 记忆追寻者 <span class="user-badge">楼主</span></div>
+                <div>发帖时间: 2023-10-15 22:37:45</div>
+            </div>
+            
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="like-btn" id="likeBtn">👍 赞 (247)</button>
+                <button class="like-btn" onclick="alert('功能尚未开放')">💬 回复</button>
+                <button class="like-btn" onclick="alert('功能尚未开放')">🔖 收藏</button>
+                <button class="like-btn" onclick="alert('功能尚未开放')">📤 分享</button>
+            </div>
+        </div>
+        
+        <div class="replies-section">
+            <div class="replies-header">
+                <div class="reply-count">127 条回复</div>
+                <div class="sort-options">排序方式: <select><option>最新回复</option><option>最早回复</option><option>最多点赞</option></select></div>
+            </div>
+            
+            <div class="pagination">
+                <a href="#" class="page-btn active">1</a>
+                <a href="#" class="page-btn">2</a>
+                <a href="#" class="page-btn">3</a>
+                <a href="#" class="page-btn">4</a>
+                <a href="#" class="page-btn">5</a>
+                <span style="color: #95a5a6; padding: 8px 5px;">...</span>
+                <a href="#" class="page-btn">13</a>
+            </div>
+            
+            <div class="reply">
+                <div class="reply-header">
+                    <div class="reply-author">时光旅行者 <span class="user-badge vip">VIP</span></div>
+                    <div class="reply-time">2023-10-15 22:45</div>
+                </div>
+                <div class="reply-content">
+                    试试用网页时光机！可能保存了那个网站的存档。
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="like-btn">👍 赞 (89)</button>
+                </div>
+            </div>
+            
+            <div class="reply">
+                <div class="reply-header">
+                    <div class="reply-author">网络侦探</div>
+                    <div class="reply-time">2023-10-15 23:10</div>
+                </div>
+                <div class="reply-content">
+                    我查了一下，这个域名已经过期了，没有续费。不过时光旅行者说得对，可以试试<a href="https://web.archive.org" target="_blank">网页时光机</a>。
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="like-btn">👍 赞 (67)</button>
+                </div>
+            </div>
+            
+            <div class="reply">
+                <div class="reply-header">
+                    <div class="reply-author">数据矿工 <span class="user-badge moderator">版主</span></div>
+                    <div class="reply-time">2023-10-16 09:22</div>
+                </div>
+                <div class="reply-content">
+                    根据域名注册信息，这个网站是2009年注册的，2015年到期。注册人信息是隐私保护的，没有个人信息。
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="like-btn">👍 赞 (45)</button>
+                </div>
+            </div>
+            
+            <div class="reply">
+                <div class="reply-header">
+                    <div class="reply-author">记忆追寻者 <span class="user-badge">楼主</span></div>
+                    <div class="reply-time">2023-10-16 10:15</div>
+                </div>
+                <div class="reply-content">
+                    <div class="quote">
+                        <strong>时光旅行者 说：</strong> 试试用网页时光机！Internet Archive的Wayback Machine可能保存了那个网站的存档。
+                    </div>
+                    谢谢建议！我刚刚试了一下网页时光机，确实找到了几个存档！但是有些存档页面显示不完整。
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="like-btn">👍 赞 (23)</button>
+                </div>
+            </div>
+            
+            <div class="highlight-reply">
+                <div class="reply-header">
+                    <div class="reply-author">数字考古学家 <span class="user-badge vip">VIP</span></div>
+                    <div class="reply-time">2023-10-16 14:35</div>
+                </div>
+                <div class="reply-content">
+                    <p>楼主，我刚刚用网页时光机仔细查了一下，确实有存档！我找到了8个关键时间点的存档：</p>
+                    <ul>
+                        <li>2009年8月20日 </li>
+                        <li>2010年3月5日 </li>
+                        <li>2010年9月12日 </li>
+                        <li>2011年1月8日 </li>
+                        <li>2011年8月3日</li>
+                        <li>2012年1月15日 </li>
+                        <li>2012年4月22日 </li>
+                        <li>2012年6月30日 </li>
+                    </ul>
+                    <p>我建议你从这些存档开始寻找线索。每个存档都可能隐藏着信息。</p>
+                    
+                    <div class="wayback-machine">
+                        <p>我已经整理好了可访问的存档链接：</p>
+                        <a href="wayback_machine.html" class="wayback-link blink">进入网页时光机查看存档</a>
+                    </div>
+                    
+                    <div class="important-clue">
+                        <div class="clue-tag">重要发现</div>
+                        <p><strong>我注意到一个奇怪的现象：</strong> 2011年之后的存档中，有些博文提到了"镜面世界"、"数字囚笼"等概念。</p>
+                        <p>还有一篇博文中有一行奇怪的代码：<span class="secret-code">404:TRAPPED_IN_DIGITAL_SPACE</span></p>
+                        <p>还有一个日期标注为"倒计时：2012-06-30"。</p>
+                        <p><strong>提示：</strong> 仔细查看每个存档页面的源代码，可能有隐藏链接或密码。</p>
+                    </div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="like-btn">👍 赞 (156)</button>
+                </div>
+            </div>
+            
+            <div class="reply">
+                <div class="reply-header">
+                    <div class="reply-author">记忆追寻者 <span class="user-badge">楼主</span></div>
+                    <div class="reply-time">2023-10-16 20:15</div>
+                </div>
+                <div class="reply-content">
+                    谢谢数字考古学家！我这就去看看。<br>
+                    <span class="invisible">密钥第一部分：t1m3_</span>
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="like-btn">👍 赞 (34)</button>
+                </div>
+            </div>
+            
+            <div class="reply">
+                <div class="reply-header">
+                    <div class="reply-author">心理学家</div>
+                    <div class="reply-time">2023-10-17 11:30</div>
+                </div>
+                <div class="reply-content">
+                    我看了那些存档的博文，2011年之后的内容有点不对劲。文字中有一种...被困住的感觉。建议仔细分析每篇博文的隐藏信息。
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="like-btn">👍 赞 (78)</button>
+                </div>
+            </div>
+            
+            <div class="reply">
+                <div class="reply-header">
+                    <div class="reply-author">密码爱好者</div>
+                    <div class="reply-time">2023-10-18 08:45</div>
+                </div>
+                <div class="reply-content">
+                    我发现一个有趣的事情：有些存档页面在控制台有隐藏信息。按F12看看。
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="like-btn">👍 赞 (92)</button>
+                </div>
+            </div>
+            
+            <div class="reply">
+                <div class="reply-header">
+                    <div class="reply-author">网络幽灵</div>
+                    <div class="reply-time">2023-10-19 03:15</div>
+                </div>
+                <div class="reply-content">
+                    我注意到了404错误代码。在网络术语中，404是"未找到"。但这里可能是双关语。另外，"TRAPPED_IN_DIGITAL_SPACE"直译是"被困在数字空间"。有点诡异...
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="like-btn">👍 赞 (67)</button>
+                </div>
+            </div>
+            
+            <div class="reply">
+                <div class="reply-header">
+                    <div class="reply-author">论坛版主 <span class="user-badge moderator">版主</span></div>
+                    <div class="reply-time">2023-10-20 16:20</div>
+                </div>
+                <div class="reply-content">
+                    此帖已加精。希望楼主能找到朋友。也提醒大家，网络记忆是脆弱的，请珍惜现在的联系。
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="like-btn">👍 赞 (123)</button>
+                </div>
+            </div>
+            
+            <div class="reply">
+                <div class="reply-header">
+                    <div class="reply-author">时间侦探</div>
+                    <div class="reply-time">2023-10-21 19:30</div>
+                </div>
+                <div class="reply-content">
+                    我对比了所有存档的时间线，发现一个模式：从2011年1月开始，每篇博文的发布时间都是凌晨3点到4点之间。这很不正常，除非...
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="like-btn">👍 赞 (56)</button>
+                </div>
+            </div>
+            
+        
+            
+            <div class="pagination">
+                <a href="#" class="page-btn active">1</a>
+                <a href="#" class="page-btn">2</a>
+                <a href="#" class="page-btn">3</a>
+                <a href="#" class="page-btn">4</a>
+                <a href="#" class="page-btn">5</a>
+                <span style="color: #95a5a6; padding: 8px 5px;">...</span>
+                <a href="#" class="page-btn">13</a>
+            </div>
+            
+            <div class="reply-form">
+                <div class="form-title">发表回复</div>
+                <textarea class="form-textarea" placeholder="写下你的回复...（注意：此功能仅为演示，不会真的提交）"></textarea>
+                <button class="form-submit" onclick="alert('回复功能仅为演示，不会真的提交')">提交回复</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("=== 隐藏信息 ===");
+            console.log("欢迎来到解谜游戏的第一站。");
+            console.log("有些信息隐藏在源代码中，有些在控制台，有些甚至需要用特殊方式查看。");
+            console.log("密钥提示：注意那些看不见的文字。");
+            
+            const hiddenText = document.querySelector('.invisible');
+            let clickCount = 0;
+            
+            hiddenText.addEventListener('click', function() {
+                clickCount++;
+                if (clickCount === 3) {
+                    this.style.color = '#e74c3c';
+                    this.style.background = '#f9f9f9';
+                    this.style.position = 'relative';
+                    this.style.left = '0';
+                    alert("你发现了隐藏文字！继续寻找更多线索。");
+                }
+            });
+            
+            // 添加闪烁光标效果
+            setInterval(() => {
+                const cursor = document.createElement('span');
+                cursor.className = 'cursor';
+                cursor.textContent = '|';
+                document.querySelector('.secret-code').appendChild(cursor);
+                setTimeout(() => {
+                    if (document.querySelector('.secret-code').lastChild.className === 'cursor') {
+                        document.querySelector('.secret-code').removeChild(document.querySelector('.secret-code').lastChild);
+                    }
+                }, 500);
+            }, 1000);
+            
+            // 为秘密代码添加点击效果
+            const secretCode = document.querySelector('.secret-code');
+            secretCode.addEventListener('click', function() {
+                this.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 300);
+            });
+            
+            // 时光机链接特效
+            const waybackLink = document.querySelector('.wayback-link');
+            waybackLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.body.style.backgroundColor = '#2c3e50';
+                document.body.style.transition = 'background-color 1s';
+                setTimeout(() => {
+                    window.location.href = 'wayback_machine.html';
+                }, 1000);
+            });
+            
+            // 点赞功能
+            const likeBtn = document.getElementById('likeBtn');
+            likeBtn.addEventListener('click', function() {
+                if (!this.classList.contains('liked')) {
+                    this.classList.add('liked');
+                    const currentLikes = parseInt(this.textContent.match(/\((\d+)\)/)[1]);
+                    this.textContent = `👍 赞 (${currentLikes + 1})`;
+                    alert('感谢点赞！');
+                } else {
+                    alert('你已经点过赞了！');
+                }
+            });
+            
+            // 为所有点赞按钮添加功能
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                if (btn.id !== 'likeBtn') {
+                    btn.addEventListener('click', function() {
+                        if (!this.classList.contains('liked')) {
+                            this.classList.add('liked');
+                            const currentText = this.textContent;
+                            const match = currentText.match(/\((\d+)\)/);
+                            if (match) {
+                                const currentLikes = parseInt(match[1]);
+                                this.textContent = currentText.replace(/\(\d+\)/, `(${currentLikes + 1})`);
+                            }
+                        }
+                    });
+                }
+            });
+            
+            // 页面离开提示
+            window.onbeforeunload = function() {
+                return "你确定要离开这个帖子吗？这里有很多重要线索。";
+            };
+            
+            // 随机改变重要线索的背景色
+            setInterval(() => {
+                const clueBox = document.querySelector('.important-clue');
+                const colors = ['#fff3cd', '#e8f4fc', '#f8f9fa'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                clueBox.style.background = randomColor;
+            }, 5000);
+        });
+        
+        // 键盘快捷键
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12') {
+                console.log("你打开了开发者工具！很好。");
+                console.log("线索提示：寻找页面中的隐藏文字和异常元素。");
+            }
+            
+            if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                alert("尝试搜索'镜面世界'或'404'");
+            }
+        });
+    </script>
+</body>
+</html>
