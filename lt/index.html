@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网络记忆论坛 - 记录互联网的每一段记忆</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #bdc3c7;
+            font-size: 1.1em;
+        }
+        
+        nav {
+            background: #34495e;
+            padding: 15px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            justify-content: center;
+            gap: 40px;
+        }
+        
+        nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: color 0.3s;
+            padding: 5px 15px;
+            border-radius: 5px;
+        }
+        
+        nav a:hover {
+            color: #3498db;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .forum-container {
+            padding: 40px;
+            min-height: 600px;
+        }
+        
+        .welcome-banner {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .post-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .post-title {
+            color: #2c3e50;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+        
+        .post-date {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .post-excerpt {
+            color: #34495e;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #95a5a6;
+            font-size: 0.9em;
+        }
+        
+        .replies {
+            background: #f8f9fa;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .highlight {
+            animation: pulse 2s infinite;
+            position: relative;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            border-top: 1px solid #eee;
+            font-size: 0.9em;
+        }
+        
+        .login-notice {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .typewriter {
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end);
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .search-input {
+            width: 50%;
+            padding: 12px 20px;
+            border: 2px solid #3498db;
+            border-radius: 25px 0 0 25px;
+            font-size: 1em;
+            outline: none;
+        }
+        
+        .search-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 0 25px 25px 0;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+        
+        .search-btn:hover {
+            background: #2980b9;
+        }
+        
+        .hidden-clue {
+            color: transparent;
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .forum-stats {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">网络记忆论坛</div>
+            <div class="subtitle">记录互联网上的每一段记忆与故事</div>
+        </header>
+        
+        <nav>
+            <ul>
+                <li><a href="#">首页</a></li>
+                <li><a href="#">最新帖子</a></li>
+                <li><a href="#">热门话题</a></li>
+                <li><a href="#">求助专区</a></li>
+                <li><a href="#">关于我们</a></li>
+            </ul>
+        </nav>
+        
+        <div class="forum-container">
+            <div class="login-notice">
+                欢迎访客，<a href="#" style="color: #3498db;">登录</a> 后可参与讨论
+            </div>
+            
+            <div class="welcome-banner">
+                <h2>欢迎来到网络记忆论坛</h2>
+                <p>这里记录着互联网的点点滴滴，从早期的个人网站到现在的社交媒体，我们一起见证网络时代的发展。</p>
+            </div>
+            
+            <div class="forum-stats">
+                <div class="stat">
+                    <div class="stat-number">12,847</div>
+                    <div class="stat-label">主题帖子</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">98,234</div>
+                    <div class="stat-label">回帖数</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">5,231</div>
+                    <div class="stat-label">注册用户</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">18</div>
+                    <div class="stat-label">在线用户</div>
+                </div>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索帖子、用户或内容...">
+                <button class="search-btn">搜索</button>
+            </div>
+            
+            <h2 style="color: #2c3e50; margin-bottom: 20px; border-left: 4px solid #3498db; padding-left: 10px;">最新求助帖子</h2>
+            
+            <div class="post-list">
+                <div class="post-card highlight" onclick="location.href='post_detail.html'">
+                    <div class="post-header">
+                        <div class="post-title">我很久没有联系上她了，她是我小时候认识的第一个网友</div>
+                        <div class="post-date">发帖时间: 2023-10-15 22:37</div>
+                    </div>
+                    <div class="post-excerpt">
+                        她是我在2008年认识的第一个网友，我们通过一个现在已经关闭的儿童论坛"梦幻乐园"相识。那时候网络还没有现在这么发达，我们通过邮件和博客交流了好几年...
+                        最近我尝试联系她，但所有的联系方式都失效了。我只记得她的博客网站网址：http://www.myjiayibh.net，现在这个链接也打不开了，我还有可能找到她吗？
+                    </div>
+                    <div class="post-meta">
+                        <div>楼主: 记忆追寻者</div>
+                        <div class="replies">127 条回复</div>
+                    </div>
+                </div>
+                
+                <div class="post-card" onclick="location.href='index.html'">
+                    <div class="post-header">
+                        <div class="post-title">寻找2005年玩《梦幻西游》时认识的朋友"剑侠情缘"</div>
+                        <div class="post-date">发帖时间: 2023-10-14 19:22</div>
+                    </div>
+                    <div class="post-excerpt">
+                        还记得2005年在《梦幻西游》里一起组队刷怪的日子吗？我是"逍遥书生"，你是"剑侠情缘"，我们在大雁塔一起练级，在长安城摆摊聊天...
+                    </div>
+                    <div class="post-meta">
+                        <div>楼主: 逍遥书生</div>
+                        <div class="replies">45 条回复</div>
+                    </div>
+                </div>
+                
+                <div class="post-card" onclick="location.href='index.html'">
+                    <div class="post-header">
+                        <div class="post-title">老网站考古：你还记得这些曾经的网络流行语吗？</div>
+                        <div class="post-date">发帖时间: 2023-10-13 11:45</div>
+                    </div>
+                    <div class="post-excerpt">
+                        "886"、"偶"、"表"、"灌水"、"潜水"、"顶"、"沙发"、"板凳"...这些曾经风靡网络的词汇，你还记得多少？
+                    </div>
+                    <div class="post-meta">
+                        <div>楼主: 网络考古学家</div>
+                        <div class="replies">203 条回复</div>
+                    </div>
+                </div>
+                
+                <div class="post-card" onclick="location.href='index.html'">
+                    <div class="post-header">
+                        <div class="post-title">那些年我们一起追过的网络小说</div>
+                        <div class="post-date">发帖时间: 2023-10-12 15:22</div>
+                    </div>
+                    <div class="post-excerpt">
+                        还记得2000年初期的网络文学吗？那些在论坛上连载的小说，没有华丽的封面，没有商业推广，只有最纯粹的故事分享...
+                    </div>
+                    <div class="post-meta">
+                        <div>楼主: 书香门第</div>
+                        <div class="replies">89 条回复</div>
+                    </div>
+                </div>
+                
+                <div class="post-card" onclick="location.href='index.html'">
+                    <div class="post-header">
+                        <div class="post-title">求助：如何找回2009年注册的QQ空间日志？</div>
+                        <div class="post-date">发帖时间: 2023-10-11 09:18</div>
+                    </div>
+                    <div class="post-excerpt">
+                        我的QQ号在2015年被盗，虽然找回来了，但空间里的所有日志和照片都不见了。那些是我中学时期的珍贵回忆，有什么办法可以找回吗？
+                    </div>
+                    <div class="post-meta">
+                        <div>楼主: 回忆收藏家</div>
+                        <div class="replies">67 条回复</div>
+                    </div>
+                </div>
+                
+                <div class="post-card" onclick="location.href='index.html'">
+                    <div class="post-header">
+                        <div class="post-title">讨论：你记忆中最深刻的早期个人网站是什么？</div>
+                        <div class="post-date">发帖时间: 2023-10-10 16:33</div>
+                    </div>
+                    <div class="post-excerpt">
+                        在博客时代之前，个人网站是很多人展示自我的方式。Flash动画、MIDI背景音乐、访问计数器...你还记得哪些经典的个人网站？
+                    </div>
+                    <div class="post-meta">
+                        <div>楼主: 网站收藏家</div>
+                        <div class="replies">112 条回复</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>网络记忆论坛 © 2005-2023 | 记录互联网的每一段记忆</p>
+            <p class="hidden-clue">线索：注意时间的流逝，每个存档都有其意义</p>
+        </footer>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const targetPost = document.querySelector('.post-card:first-child');
+            targetPost.classList.add('highlight');
+            
+            setTimeout(() => {
+                const title = document.querySelector('.post-title:first-child');
+                title.classList.add('typewriter');
+            }, 1000);
+            
+            console.log("欢迎来到网络记忆论坛。");
+            console.log("有时候，重要的信息隐藏在看似普通的地方。");
+            console.log("提示：仔细阅读每一个页面，包括控制台输出。");
+            
+            // 为搜索框添加特效
+            const searchInput = document.querySelector('.search-input');
+            searchInput.addEventListener('focus', function() {
+                this.style.boxShadow = '0 0 10px rgba(52, 152, 219, 0.5)';
+            });
+            
+            searchInput.addEventListener('blur', function() {
+                this.style.boxShadow = 'none';
+            });
+            
+            // 添加点击统计
+            let clickCount = 0;
+            document.body.addEventListener('click', function() {
+                clickCount++;
+                if (clickCount === 10) {
+                    console.log("提示：你已经点击了10次页面。注意观察页面中的异常元素。");
+                }
+            });
+            
+            // 随机改变高亮帖子的颜色
+            setInterval(() => {
+                const highlightPost = document.querySelector('.highlight');
+                const colors = ['#3498db', '#e74c3c', '#2ecc71', '#9b59b6', '#f39c12'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                highlightPost.style.borderLeftColor = randomColor;
+            }, 3000);
+            
+            // 添加页面离开提示
+            window.onbeforeunload = function() {
+                return "确定要离开网络记忆论坛吗？";
+            };
+        });
+        
+        // 搜索功能
+        document.querySelector('.search-btn').addEventListener('click', function() {
+            const searchTerm = document.querySelector('.search-input').value.toLowerCase();
+            if (searchTerm.includes('myjiayibh.net') || searchTerm.includes('佳怡') || searchTerm.includes('镜面世界')) {
+                alert("搜索到相关内容！正在跳转到相关帖子...");
+                setTimeout(() => {
+                    window.location.href = 'post_detail.html';
+                }, 1000);
+            } else if (searchTerm) {
+                alert("未找到相关内容。试试搜索'myjiayibh.net'或'佳怡'。");
+            }
+        });
+        
+        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.querySelector('.search-btn').click();
+            }
+        });
+    </script>
+</body>
+</html>
