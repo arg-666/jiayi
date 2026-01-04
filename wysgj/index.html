@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网页时光机 - myjiayibh.net 存档</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+        
+        body {
+            background: #0f0f23;
+            color: #cccccc;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(28, 58, 173, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(200, 50, 100, 0.1) 0%, transparent 20%);
+        }
+        
+        .terminal {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(10, 10, 20, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+            overflow: hidden;
+            border: 1px solid #00ccff;
+        }
+        
+        .terminal-header {
+            background: #002b36;
+            padding: 15px 20px;
+            border-bottom: 1px solid #00aaff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .terminal-title {
+            color: #00ffaa;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ffaa;
+        }
+        
+        .terminal-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .close { background: #ff5f56; }
+        .minimize { background: #ffbd2e; }
+        .maximize { background: #27ca3f; }
+        
+        .terminal-body {
+            padding: 30px;
+            min-height: 500px;
+        }
+        
+        .prompt {
+            color: #00ff00;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        
+        .blink {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        .command {
+            color: #00aaff;
+        }
+        
+        .output {
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+        
+        .archive-list {
+            margin: 30px 0;
+        }
+        
+        .archive-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(0, 40, 60, 0.3);
+            border-left: 3px solid #00aaff;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .archive-item:hover {
+            background: rgba(0, 60, 100, 0.5);
+            transform: translateX(10px);
+            border-left-color: #00ffaa;
+        }
+        
+        .archive-date {
+            color: #00ffaa;
+            font-weight: bold;
+        }
+        
+        .archive-status {
+            color: #ffff00;
+            font-size: 0.9em;
+        }
+        
+        .access-button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Consolas', monospace;
+        }
+        
+        .access-button:hover {
+            background: #0088ff;
+            box-shadow: 0 0 15px #0088ff;
+        }
+        
+        .hidden-data {
+            color: #333333;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+        
+        .hidden-data:hover {
+            color: #666666;
+        }
+        
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 #ff00ff;
+            animation: glitch-1 2s infinite linear alternate-reverse;
+        }
+        
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: 1px 0 #00ffff;
+            animation: glitch-2 3s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-1 {
+            0% { clip-path: inset(20% 0 30% 0); }
+            100% { clip-path: inset(50% 0 20% 0); }
+        }
+        
+        @keyframes glitch-2 {
+            0% { clip-path: inset(10% 0 60% 0); }
+            100% { clip-path: inset(70% 0 10% 0); }
+        }
+        
+        .warning {
+            color: #ff5555;
+            border: 1px solid #ff5555;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            background: rgba(255, 0, 0, 0.1);
+        }
+        
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .secret-panel {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border: 1px solid #00ffaa;
+            border-radius: 10px;
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .password-input {
+            background: #001122;
+            border: 1px solid #00aaff;
+            color: #00ffaa;
+            padding: 10px;
+            width: 300px;
+            margin-right: 10px;
+            font-family: 'Consolas', monospace;
+        }
+        
+        .submit-button {
+            background: #006600;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'Consolas', monospace;
+        }
+        
+        .hint {
+            color: #888888;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+            animation: scan 5s linear infinite;
+            z-index: 1;
+        }
+        
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        
+        .timeline {
+            position: relative;
+            margin: 40px 0;
+            padding-left: 20px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: #00aaff;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-left: 30px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #00ffaa;
+            border: 2px solid #00aaff;
+        }
+        
+        .timeline-date {
+            color: #00ffaa;
+            font-weight: bold;
+        }
+        
+        .timeline-content {
+            color: #cccccc;
+            margin-top: 5px;
+        }
+        
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            color: #00aaff;
+            text-decoration: none;
+            border: 1px solid #00aaff;
+            padding: 8px 20px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .back-button:hover {
+            background: #00aaff;
+            color: #000;
+        }
+        
+        .corrupted {
+            color: #ff5555;
+            text-decoration: line-through;
+        }
+        
+        .status-normal { color: #00ffaa; }
+        .status-warning { color: #ffff00; }
+        .status-error { color: #ff5555; }
+        .status-critical { color: #ff00ff; }
+        
+        .data-stream {
+            font-family: 'Courier New', monospace;
+            background: #001122;
+            color: #00ffaa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 0.9em;
+            white-space: pre;
+            overflow: auto;
+            max-height: 100px;
+        }
+        
+        .cursor {
+            animation: cursor-blink 1s infinite;
+        }
+        
+        @keyframes cursor-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="scan-line"></div>
+    <div class="matrix-rain" id="matrixRain"></div>
+    
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="terminal-title">
+                <span class="glitch-text" data-text="INTERNET ARCHIVE - WAYBACK MACHINE">INTERNET ARCHIVE - WAYBACK MACHINE</span>
+            </div>
+            <div class="terminal-controls">
+                <div class="control close"></div>
+                <div class="control minimize"></div>
+                <div class="control maximize"></div>
+            </div>
+        </div>
+        
+        <div class="terminal-body">
+            <div class="prompt">
+                root@wayback:~# <span class="command">search myjiayibh.net --full --timeline</span>
+            </div>
+            
+            <div class="output">
+                > 正在搜索存档: myjiayibh.net<br>
+                > 搜索参数: 完整时间线分析<br>
+                > 找到 8 个可用存档<br>
+                > 时间范围: 2009-08-20 至 2012-06-30<br>
+                > 状态: 检测到数据异常模式<br>
+                > 最后捕获时间: 2012-06-30 23:59:59 UTC<br>
+                <br>
+                <span style="color: #ffff00">警告：检测到时间线异常，某些存档包含矛盾数据</span>
+            </div>
+            
+            <div class="warning">
+                <strong>系统警告：</strong>这些是历史网页存档。某些内容可能看起来奇怪或不完整，这是正常的存档过程导致的。但检测到某些存档存在非正常的修改痕迹。
+            </div>
+            
+            <div class="timeline">
+                <h3 style="color: #00aaff; margin-bottom: 20px;">网站时间线分析：</h3>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">2009年8月20日 14:22:10 UTC</div>
+                    <div class="timeline-content">网站建立初期，基础模板，内容较少。状态: <span class="status-normal">正常</span></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">2010年3月5日 09:15:33 UTC</div>
+                    <div class="timeline-content">常规博客更新，生活记录。状态: <span class="status-normal">正常</span></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">2010年9月12日 16:45:21 UTC</div>
+                    <div class="timeline-content">日常更新，但检测到隐藏数据。状态: <span class="status-warning">轻微异常</span></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">2011年1月8日 03:30:47 UTC</div>
+                    <div class="timeline-content">首次出现异常内容，提及"镜面"。状态: <span class="status-warning">异常</span></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">2011年8月3日 20:15:47 UTC</div>
+                    <div class="timeline-content">明显数据异常，二进制代码出现。状态: <span class="status-error">严重异常</span></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">2012年1月15日 03:42:11 UTC</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">2012年4月22日 19:30:55 UTC</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">2012年6月30日 23:59:59 UTC</div>
+                </div>
+            </div>
+            
+            <div class="archive-list">
+                <h3 style="color: #00aaff; margin-bottom: 20px;">可访问的网站存档：</h3>
+                
+                <div class="archive-item" onclick="accessArchive(1)">
+                    <div>
+                        <div class="archive-date">2009-08-20 14:22:10 UTC</div>
+                        <div>网站初期 | 捕获完整性：95% | 状态: <span class="status-normal">正常</span></div>
+                        <div class="hidden-data"></div>
+                    </div>
+                    <button class="access-button" onclick="event.stopPropagation(); accessArchive(1)">访问存档</button>
+                </div>
+                
+                <div class="archive-item" onclick="accessArchive(2)">
+                    <div>
+                        <div class="archive-date">2010-03-05 09:15:33 UTC</div>
+                        <div>常规更新 | 捕获完整性：93% | 状态: <span class="status-normal">正常</span></div>
+                        <div class="hidden-data"></div>
+                    </div>
+                    <button class="access-button" onclick="event.stopPropagation(); accessArchive(2)">访问存档</button>
+                </div>
+                
+                <div class="archive-item" onclick="accessArchive(3)">
+                    <div>
+                        <div class="archive-date">2010-09-12 16:45:21 UTC</div>
+                        <div>隐藏数据 | 捕获完整性：90% | 状态: <span class="status-warning">轻微异常</span></div>
+                        <div class="hidden-data">查看页面源代码寻找线索</div>
+                    </div>
+                    <button class="access-button" onclick="event.stopPropagation(); accessArchive(3)">访问存档</button>
+                </div>
+                
+                <div class="archive-item" onclick="accessArchive(4)">
+                    <div>
+                        <div class="archive-date">2011-01-08 03:30:47 UTC</div>
+                        <div>首次异常 | 捕获完整性：88% | 状态: <span class="status-warning">异常</span></div>
+                        <div class="hidden-data">注意"镜面"相关词汇</div>
+                    </div>
+                    <button class="access-button" onclick="event.stopPropagation(); accessArchive(4)">访问存档</button>
+                </div>
+                
+                <div class="archive-item" onclick="accessArchive(5)">
+                    <div>
+                        <div class="archive-date">2011-08-03 20:15:47 UTC</div>
+                        <div>明显异常 | 捕获完整性：85% | 状态: <span class="status-error">严重异常</span></div>
+                        <div class="hidden-data"></div>
+                    </div>
+                    <button class="access-button" onclick="event.stopPropagation(); accessArchive(5)">访问存档</button>
+                </div>
+                
+                <div class="archive-item" onclick="accessArchive(6)">
+                    <div>
+                        <div class="archive-date">2012-01-15 03:42:11 UTC</div>
+                        <div>系统日志 | 捕获完整性：78% | 状态: <span class="status-critical">危急</span></div>
+                        <div class="hidden-data">注意控制台输出和错误代码</div>
+                    </div>
+                    <button class="access-button" onclick="event.stopPropagation(); accessArchive(6)">访问存档</button>
+                </div>
+                
+                <div class="archive-item" onclick="accessArchive(7)">
+                    <div>
+                        <div class="archive-date">2012-04-22 19:30:55 UTC</div>
+                        <div>告别预告 | 捕获完整性：72% | 状态: <span class="status-warning">异常</span></div>
+                        <div class="hidden-data"></div>
+                    </div>
+                    <button class="access-button" onclick="event.stopPropagation(); accessArchive(7)">访问存档</button>
+                </div>
+                
+                <div class="archive-item" onclick="accessArchive(8)">
+                    <div>
+                        <div class="archive-date">2012-06-30 23:59:59 UTC</div>
+                        <div>最终存档 | 捕获完整性：65% | 状态: <span class="status-critical">未知</span></div>
+                        <div class="hidden-data"></div>
+                    </div>
+                    <button class="access-button" onclick="event.stopPropagation(); accessArchive(8)">访问存档</button>
+                </div>
+            </div>
+            
+            <div class="output">
+                > 系统提示：按时间顺序查看存档以获得完整故事线<br>
+                > 数据完整性警告：2011年后的存档存在系统化数据损坏<br>
+            </div>
+            
+            <div class="secret-panel" id="secretPanel">
+                <h4 style="color: #00ffaa;">管理员访问面板</h4>
+                <p>输入密码以访问隐藏存档和高级分析：</p>
+                <input type="password" class="password-input" id="passwordInput" placeholder="输入密码...">
+                <button class="submit-button" onclick="checkPassword()">提交</button>
+                <div class="hint">提示：密码由四个存档中的线索组成，格式为：线索1_线索2_线索3_线索4</div>
+                <div id="passwordResult" style="margin-top: 10px;"></div>
+            </div>
+            
+            <a href="post_detail.html" class="back-button">← 返回论坛帖子</a>
+            
+            <div class="prompt" style="margin-top: 30px;">
+                root@wayback:~# <span id="cursor" class="blink">_</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 创建矩阵雨背景
+        const matrixCanvas = document.createElement('canvas');
+        const ctx = matrixCanvas.getContext('2d');
+        matrixCanvas.className = 'matrix-rain';
+        matrixCanvas.width = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
+        document.getElementById('matrixRain').appendChild(matrixCanvas);
+        
+        const chars = "01";
+        const charArray = chars.split("");
+        const rainDrops = [];
+        const fontSize = 14;
+        const columns = matrixCanvas.width / fontSize;
+        
+        for (let i = 0; i < columns; i++) {
+            rainDrops[i] = 1;
+        }
+        
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+            
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + "px monospace";
+            
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = charArray[Math.floor(Math.random() * charArray.length)];
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                
+                if (rainDrops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        }
+        
+        setInterval(drawMatrix, 50);
+        
+        // 存档访问函数
+        function accessArchive(number) {
+            console.log(`正在访问存档 ${number}...`);
+            console.log(`系统提示：按时间顺序查看所有存档以理解完整故事`);
+            
+            const archiveNames = [
+                'archive_2009_early.html',
+                'archive_2010_normal.html',
+                'archive_2010_hidden.html',
+                'archive_2011_first.html',
+                'archive_2011_strange.html',
+                'archive_2012_system.html',
+                'archive_2012_farewell.html',
+                'archive_2012_final.html'
+            ];
+            
+            // 添加页面转场效果
+            document.body.style.animation = 'none';
+            document.body.offsetHeight;
+            document.body.style.animation = 'fadeOut 1s forwards';
+            
+            setTimeout(() => {
+                window.location.href = archiveNames[number - 1];
+            }, 1000);
+        }
+        
+        // 键盘快捷键
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+U 打开秘密面板
+            if (e.ctrlKey && e.key === 'u') {
+                e.preventDefault();
+                const panel = document.getElementById('secretPanel');
+                panel.style.display = 'block';
+                console.log("秘密面板已打开。提示：密码在存档中寻找。");
+            }
+            
+            // F12 控制台提示
+            if (e.key === 'F12') {
+                console.log("=== 网页时光机控制台 ===");
+                console.log("欢迎来到网页时光机。这里保存着互联网的记忆片段。");
+                console.log("有些存档可能包含隐藏信息，仔细检查每一个细节。");
+                console.log("提示：按Ctrl+U可以打开秘密面板");
+            }
+        });
+        
+        // 密码检查函数
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value;
+            const resultDiv = document.getElementById('passwordResult');
+            
+            if (input === 't1m3_m4ch1n3_404_TRAPPED') {
+                resultDiv.innerHTML = '<span style="color: #00ff00">密码正确！正在访问隐藏存档...</span>';
+                setTimeout(() => {
+                    window.location.href = 'archive_secret.html';
+                }, 2000);
+            } else if (input === 't1m3_m4ch1n3_404_TRAPPED_IN_DIGITAL_SPACE') {
+                resultDiv.innerHTML = '<span style="color: #00ffaa">密码正确！但包含额外信息，正在访问高级存档...</span>';
+                setTimeout(() => {
+                    window.location.href = 'archive_secret_advanced.html';
+                }, 2000);
+            } else {
+                resultDiv.innerHTML = '<span style="color: #ff5555">密码错误。提示：密码由论坛帖子和存档中的线索组成</span>';
+            }
+        }
+        
+        // 光标闪烁效果
+        const cursor = document.getElementById('cursor');
+        setInterval(() => {
+            cursor.style.visibility = cursor.style.visibility === 'hidden' ? 'visible' : 'hidden';
+        }, 500);
+        
+        // 添加CSS动画
+        document.addEventListener('DOMContentLoaded', function() {
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeOut {
+                    to { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // 随机数据流效果
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    const dataStream = document.createElement('div');
+                    dataStream.className = 'data-stream';
+                    dataStream.textContent = '> 数据传输中... [' + Date.now().toString(16) + ']';
+                    dataStream.style.opacity = '0';
+                    document.querySelector('.terminal-body').appendChild(dataStream);
+                    
+                    setTimeout(() => {
+                        dataStream.style.transition = 'opacity 2s';
+                        dataStream.style.opacity = '1';
+                    }, 10);
+                    
+                    setTimeout(() => {
+                        dataStream.style.opacity = '0';
+                        setTimeout(() => {
+                            if (dataStream.parentNode) {
+                                dataStream.parentNode.removeChild(dataStream);
+                            }
+                        }, 2000);
+                    }, 3000);
+                }
+            }, 5000);
+            
+            // 控制台欢迎信息
+            console.log("=== 网页时光机控制台 ===");
+            console.log("欢迎来到网页时光机。这里保存着互联网的记忆片段。");
+            console.log("有些存档可能包含隐藏信息，仔细检查每一个细节。");
+            console.log("提示：按Ctrl+U可以打开秘密面板");
+            console.log("密码提示：t1m3_m4ch1n3_404_TRAPPED");
+            
+            // 点击隐藏数据时显示
+            document.querySelectorAll('.hidden-data').forEach(el => {
+                el.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    this.style.color = '#00ffaa';
+                    this.style.background = 'rgba(0, 255, 170, 0.1)';
+                    this.style.padding = '5px';
+                    this.style.borderRadius = '3px';
+                });
+            });
+            
+            // 为所有存档项添加键盘快捷键
+            document.querySelectorAll('.archive-item').forEach((item, index) => {
+                item.setAttribute('tabindex', '0');
+                item.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        accessArchive(index + 1);
+                    }
+                });
+            });
+            
+            // 页面离开提示
+            window.onbeforeunload = function() {
+                return "你确定要离开网页时光机吗？这里保存着重要的历史数据。";
+            };
+        });
+        
+        // 窗口大小变化时调整矩阵雨
+        window.addEventListener('resize', function() {
+            matrixCanvas.width = window.innerWidth;
+            matrixCanvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
